@@ -73,5 +73,6 @@ Check on each helper column: the group counts add up to all 9,993 rows.
 - Orders with a discount above 50% (856 rows) lost 76,559 in total. Orders with no discount earned 320,988.
 - Central has the highest average discount (24%), which fits the low profit margin I found in Day 1.
 
+
 ### Tools used
 Google Sheets: SUMIF, COUNTIF, AVERAGEIF, IF (nested), XLOOKUP, VLOOKUP, INDEX/MATCH, IFERROR, MAX
