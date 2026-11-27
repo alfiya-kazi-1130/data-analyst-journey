@@ -128,5 +128,62 @@ Google Sheets: SUMIF, COUNTIF, AVERAGEIF, IF (nested), XLOOKUP, VLOOKUP, INDEX/M
 - Average profit per order falls as the discount rises, and discounts above 20% lose money on average.
 - Bigger discounts do not go with bigger sales (r = -0.03).
 
+- ## Day 4: Cleaning messy data (Google Sheets)
+
+**Workbook:** `messy_day4.xlsx` (tabs: original Messy, cleaning, cleaning log, scorecard)
+**Data:** practice file made from a 1,225-row sample of Superstore with common data errors added on purpose, so every fix could be checked.
+
+### Business question
+Can I trust this data? What is wrong with it, and what did I change?
+
+### 1. Profiling (measure first, change nothing)
+| Check | Formula | Found |
+|---|---|---|
+| Data rows | `=COUNTA(range)` | 1,225 |
+| Blank cells | `=COUNTBLANK(range)` | Postal Code 40, Discount 20 |
+| Text instead of numbers or dates | `=SUMPRODUCT(--ISTEXT(range))` | Order Date 40, Sales 30, Profit 12 ("N/A") |
+| Impossible values | `=COUNTIF(range,"<0")`, `">1"` | Quantity below 0: 8, Discount above 1: 10 |
+| Labels not exactly valid | `=SUMPRODUCT(--EXACT(range,"label"))` | Region 35, Segment 20, Ship Mode 28 |
+
+### 2. Fixing text
+- Trimmed extra spaces and fixed capitalisation with `TRIM` and `PROPER`, working in helper columns, then pasting values only.
+- Used a safer formula for names so correct names such as McMath are not damaged: `=IF(EXACT(F2,LOWER(F2)),PROPER(TRIM(F2)),TRIM(F2))`.
+- Fixed Ship Mode typos with Find and replace (match entire cell contents).
+- Counted changes with `=SUMPRODUCT(--NOT(EXACT(original,cleaned)))`: Customer Name 80, Region 35, Segment 20, Ship Mode 28.
+
+### 3. Duplicates and blanks
+- Counted duplicates before removing them: `=ROWS(range)-ROWS(UNIQUE(range))` gave 25. Removed them with Data cleanup, leaving 1,200 rows.
+- Cleaned the text first, because `West` and `west ` would hide duplicates.
+- Replaced the 12 "N/A" Profit cells with real blanks. A missing profit is unknown, not zero.
+- Left Postal Code (40) and Discount (20) blank: unknown values, and guessing could be wrong.
+- Built a missing-value report with `=BYCOL(range,LAMBDA(c,COUNTBLANK(c)))`.
+
+### 4. Dates and numbers stored as text
+- Converted 30 text Sales values (such as `$1,706.18`) with `SUBSTITUTE` and `VALUE`, and 40 text Order Dates with `DATE`, `RIGHT`, `MID` and `LEFT`.
+- Total Sales changed from 309,296.47 to 307,530.23: converting text added about 4,669, and removing duplicates took out about 6,435.
+- Years in the data after cleaning: 2011, 2012, 2013, 2014.
+
+### 5. Impossible values
+- Negative Quantity (8 rows): assumed a sign typo, so used `ABS()`.
+- Discount above 1 (10 rows): assumed a percent typed as a whole number, so divided by 100.
+- Added data validation: Quantity a whole number of 1 or more, Discount between 0 and 1.
+- Both fixes are assumptions, and I recorded them in the log.
+
+### Before and after
+| Check | Before | After |
+|---|---|---|
+| Rows | 1,225 | 1,200 |
+| Duplicates | 25 | 0 |
+| Customer Name problems | 80 | 0 |
+| Region / Segment / Ship Mode invalid | 35 / 20 / 28 | 0 |
+| Sales stored as text | 30 | 0 |
+| Order Date stored as text | 40 | 0 |
+| Profit stored as "N/A" | 12 | 0 |
+| Negative Quantity / Discount above 1 | 8 / 10 | 0 |
+| Blank Postal Code / Discount / Profit | 40 / 20 / 12 | 40 / 20 / 12 (kept on purpose) |
+
+### Tools used
+Google Sheets: TRIM, PROPER, EXACT, SUMPRODUCT, COUNTBLANK, UNIQUE, FILTER, BYCOL, VALUE, SUBSTITUTE, DATE, Find and replace, Remove duplicates, Data validation
+
 ### Tools used
 Google Sheets: AVERAGE, MEDIAN, MODE, QUARTILE, STDEV, CORREL, COUNTIF, pivot tables, column / bar / line / scatter / pie charts
