@@ -187,3 +187,37 @@ Google Sheets: TRIM, PROPER, EXACT, SUMPRODUCT, COUNTBLANK, UNIQUE, FILTER, BYCO
 
 ### Tools used
 Google Sheets: AVERAGE, MEDIAN, MODE, QUARTILE, STDEV, CORREL, COUNTIF, pivot tables, column / bar / line / scatter / pie charts
+
+## Day 5: Pivot tables in depth (Google Sheets)
+
+**Workbook:** `superstore_clean`, tabs Day-5-lesson 1 to Day-5-Lesson4
+**Data:** Superstore, 9,993 rows
+
+### Business questions
+1. How do sales and profit change over time and across categories and regions?
+2. Which products, customers and states drive or lose money?
+3. Which discounts and segments matter most?
+
+### 1. Group dates, and rows with columns together
+- Grouped Order Date by year and month, and built Region x Category grids.
+- Sales growth 2011 to 2014: Office Supplies 62%, Technology 55%, Furniture 37%. Technology added slightly more rupees, but Office Supplies grew faster in percent.
+- Central earns 39,706 overall, but its Furniture loses 2,871, which a plain Region pivot hides.
+- Biggest sales months: November, December and September.
+
+### 2. Show as a percentage, and calculated fields
+- West has the largest share of sales (31.6%). East depends most on Technology (39% of its sales).
+- Calculated field `=SUM(Profit)/SUM(Sales)`: overall margin 12.47%. Labels has the highest margin (44%) and Tables the lowest (-9%).
+- Margin by region: West 14.9%, East 13.5%, South 11.9%, Central 7.9%. Central also has the highest average discount (24%).
+- I used SUM(Profit)/SUM(Sales) (12.47%) instead of the average of row margins (12.03%), because the ratio of sums gives each rupee of sales equal weight.
+
+### 3. Slicers and Top N
+- Top 5 customers by profit: Tamara Chand 8,981; Raymond Buch 6,976; Sanjit Chand 5,757; Hunter Lopez 5,622; Adrian Barton 5,445.
+- Top 5 states by sales: California 457,688; New York 310,876; Texas 170,188; Washington 138,641; Pennsylvania 116,512.
+- Bottom 5 states by profit: Texas -25,729; Ohio -16,959; Pennsylvania -15,560; Illinois -12,608; North Carolina -7,491.
+- Texas and Pennsylvania are in the top 5 for sales and the bottom 5 for profit, so high sales do not guarantee profit.
+- Corporate segment: sales 706,146, profit 91,979. Consumer customers in the West: profit 57,451.
+- A slicer filters every pivot on the same data. For practice questions I used each pivot's own Filters card, which affects only that pivot.
+
+### 4. Mixed practice
+- Standard Class brings the most sales (59% of the total).
+- Consumer customers buying Technology earn the most profit
